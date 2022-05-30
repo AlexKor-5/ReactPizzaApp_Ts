@@ -1,10 +1,18 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
 
 export const PizzaHomePage: FC = () => {
+    useEffect(()=>{
+        fetch('/pizzas')
+            .then(data=>data.json())
+            .then(data=>console.log(data))
+    })
+
+    // console.log('home page render!')
+
     return (
         <div className="content">
             <div className="container">

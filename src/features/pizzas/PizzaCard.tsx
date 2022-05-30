@@ -20,6 +20,10 @@ export const PizzaCard: FC = () => {
                     <li>40 sm.</li>
                 </ul>
             </div>
+            <div className="pizza-block__data">
+                <p>Type: <b>With meat</b></p><br/>
+                <p>Popularity point:<b> 98</b></p>
+            </div>
             <div className="pizza-block__bottom">
                 <div className="pizza-block__price">
                     <small>from</small> $49{' '}
