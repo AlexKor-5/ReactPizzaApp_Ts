@@ -1,17 +1,30 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC} from 'react'
 
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
+import {useGetPizzasQuery} from "../api/apiSlice"
+import MoonLoader from "react-spinners/MoonLoader";
+import { useDispatch } from 'react-redux'
+import {loadedPizzas} from "../reducers/pizzaSlice"
 
 export const PizzaHomePage: FC = () => {
-    useEffect(()=>{
-        fetch('/pizzas')
-            .then(data=>data.json())
-            .then(data=>console.log(data))
-    })
+    const dispatch = useDispatch()
+    const {data: pizzas=[], isLoading, isSuccess, isError, error} = useGetPizzasQuery()
+    // console.log(pizzas);
 
-    // console.log('home page render!')
+
+    let contentCards
+
+    if (isLoading) {
+        contentCards = <MoonLoader loading={isLoading} size={100} color={"#fe5f1e"} />
+    } else if (isSuccess) {
+        // console.log(pizzas);
+        // dispatch(loadedPizzas(pizzas))
+        contentCards = null
+    } else if (isError) {
+        contentCards = <div>{"Error ..."}</div>
+    }
 
     return (
         <div className="content">
@@ -24,7 +37,8 @@ export const PizzaHomePage: FC = () => {
                 <h2 className="content__title">All pizzas</h2>
 
                 <div className="content__items">
-                    <PizzaCard />
+                    {/*<PizzaCard />*/}
+                    {contentCards}
                 </div>
             </div>
         </div>
