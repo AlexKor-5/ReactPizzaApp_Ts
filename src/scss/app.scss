@@ -55,6 +55,13 @@ body {
     align-items: center;
   }
 
+  &__imageAndTitle{
+    display: flex;
+   > svg{
+     margin-right: 20px;
+   }
+  }
+
   .content__title {
     display: flex;
     align-items: center;

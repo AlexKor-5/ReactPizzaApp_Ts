@@ -1,29 +1,28 @@
-import React, { FC} from 'react'
+import React, { FC } from 'react'
 
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
-import {useGetPizzasQuery} from "../api/apiSlice"
-import MoonLoader from "react-spinners/MoonLoader";
-import { useDispatch } from 'react-redux'
-import {loadedPizzas} from "../reducers/pizzaSlice"
+import { useGetPizzasQuery } from '../api/apiSlice'
+import MoonLoader from 'react-spinners/MoonLoader'
+// import { useDispatch } from 'react-redux'
+// import {loadedPizzas} from "../reducers/pizzaSlice"
 
 export const PizzaHomePage: FC = () => {
-    const dispatch = useDispatch()
-    const {data: pizzas=[], isLoading, isSuccess, isError, error} = useGetPizzasQuery()
+    // const dispatch = useDispatch()
+    const { data: pizzas = [], isLoading, isSuccess, isError } = useGetPizzasQuery()
     // console.log(pizzas);
-
 
     let contentCards
 
     if (isLoading) {
-        contentCards = <MoonLoader loading={isLoading} size={100} color={"#fe5f1e"} />
+        contentCards = <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
     } else if (isSuccess) {
         // console.log(pizzas);
         // dispatch(loadedPizzas(pizzas))
-        contentCards = null
+        contentCards = <PizzaCard />
     } else if (isError) {
-        contentCards = <div>{"Error ..."}</div>
+        contentCards = <div>{'Error ...'}</div>
     }
 
     return (
@@ -36,10 +35,7 @@ export const PizzaHomePage: FC = () => {
 
                 <h2 className="content__title">All pizzas</h2>
 
-                <div className="content__items">
-                    {/*<PizzaCard />*/}
-                    {contentCards}
-                </div>
+                <div className="content__items">{contentCards}</div>
             </div>
         </div>
     )
