@@ -315,3 +315,11 @@ body {
     }
   }
 }
+
+.pizzaSingle{
+  display: flex;
+  padding:30px;
+  &__title{
+    font-size: 50px;
+  }
+}

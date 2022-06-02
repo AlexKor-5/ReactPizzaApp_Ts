@@ -18,7 +18,7 @@ export const PizzaHomePage: FC = () => {
     if (isLoading) {
         contentCards = <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
     } else if (isSuccess) {
-        // console.log(pizzas);
+        console.log(pizzas)
         // dispatch(loadedPizzas(pizzas))
         contentCards = <PizzaCard />
     } else if (isError) {
