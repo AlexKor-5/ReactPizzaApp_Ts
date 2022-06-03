@@ -3,22 +3,22 @@ import React, { FC } from 'react'
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
-import { useGetPizzasQuery } from '../api/apiSlice'
+import { selectPizzasData, useGetPizzasQuery } from '../api/apiSlice'
 import MoonLoader from 'react-spinners/MoonLoader'
-// import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 // import {loadedPizzas} from "../reducers/pizzaSlice"
 
 export const PizzaHomePage: FC = () => {
     // const dispatch = useDispatch()
     const { data: pizzas = [], isLoading, isSuccess, isError } = useGetPizzasQuery()
-    // console.log(pizzas);
+    console.log(useSelector(selectPizzasData))
 
     let contentCards
 
     if (isLoading) {
         contentCards = <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
     } else if (isSuccess) {
-        console.log(pizzas)
+        // console.log(pizzas)
         // dispatch(loadedPizzas(pizzas))
         contentCards = <PizzaCard />
     } else if (isError) {
