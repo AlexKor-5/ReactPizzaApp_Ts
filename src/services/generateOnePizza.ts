@@ -1,7 +1,7 @@
 import { randomFromArray } from './randomFromArray'
 import { faker } from '@faker-js/faker'
 
-export const generateOnePizza = (name: string, image: string, spec: object): object => {
+export const generateOnePizza = (name: string, image: string, specId: object): object => {
     return {
         name,
         image,
@@ -14,6 +14,6 @@ export const generateOnePizza = (name: string, image: string, spec: object): obj
         description: [...Array(5)]
             .map(() => faker.commerce.productDescription())
             .reduce((accum, current) => (accum += current), ''),
-        spec,
+        specId,
     }
 }

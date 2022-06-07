@@ -323,3 +323,12 @@ body {
     font-size: 50px;
   }
 }
+
+.mooLoader{
+  height: max-content;
+  width: max-content;
+  margin:0 auto;
+  > span{
+    display: block;
+  }
+}

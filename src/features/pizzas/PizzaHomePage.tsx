@@ -1,29 +1,14 @@
 import React, { FC } from 'react'
-
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
-import { selectPizzasData, useGetPizzasQuery } from '../api/apiSlice'
+import { selectFilteredPizzaIds, useGetPizzasQuery } from '../api/apiSlice'
 import MoonLoader from 'react-spinners/MoonLoader'
 import { useSelector } from 'react-redux'
-// import {loadedPizzas} from "../reducers/pizzaSlice"
 
 export const PizzaHomePage: FC = () => {
-    // const dispatch = useDispatch()
-    const { data: pizzas = [], isLoading, isSuccess, isError } = useGetPizzasQuery()
-    console.log(useSelector(selectPizzasData))
-
-    let contentCards
-
-    if (isLoading) {
-        contentCards = <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
-    } else if (isSuccess) {
-        // console.log(pizzas)
-        // dispatch(loadedPizzas(pizzas))
-        contentCards = <PizzaCard />
-    } else if (isError) {
-        contentCards = <div>{'Error ...'}</div>
-    }
+    const { isLoading, isSuccess, isError } = useGetPizzasQuery()
+    const pizzasIds = useSelector(selectFilteredPizzaIds)
 
     return (
         <div className="content">
@@ -35,7 +20,15 @@ export const PizzaHomePage: FC = () => {
 
                 <h2 className="content__title">All pizzas</h2>
 
-                <div className="content__items">{contentCards}</div>
+                <div className="content__items">
+                    {isLoading ? (
+                        <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
+                    ) : isSuccess ? (
+                        pizzasIds.map(id => <PizzaCard id={id} key={id} />)
+                    ) : isError ? (
+                        <div>{'Error ...'}</div>
+                    ) : null}
+                </div>
             </div>
         </div>
     )

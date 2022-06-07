@@ -1,38 +1,57 @@
 import React, { FC } from 'react'
 import { AddToCartButton } from '../../components/AddToCartButton/AddToCartButton'
+import { EntityId } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { selectPizzaById } from '../api/apiSlice'
+import { RootState } from '../store/store'
+import { PizzaSpecsButtons } from './PizzaSpecsButtons'
 
-export const PizzaCard: FC = () => {
+interface PizzaCardPropsType {
+    id: EntityId
+}
+
+interface PizzaType {
+    currencySign: string
+    description: string
+    id: string
+    image: string
+    name: string
+    popularityPoint: number
+    price: number
+    specId: string
+    type: string
+}
+
+export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
+    const pizza = useSelector((state: RootState) => selectPizzaById(state, id)) as PizzaType
+    const {
+        image: imageLink,
+        name,
+        price,
+        type: pizzaType,
+        currencySign,
+        popularityPoint,
+        specId,
+    } = pizza
+
     return (
         <div className="pizza-block">
-            <img
-                className="pizza-block__image"
-                src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
-                alt="Pizza"
-            />
-            <h4 className="pizza-block__title">Pizza name</h4>
-            <div className="pizza-block__selector">
-                <ul>
-                    <li className="active">Thin</li>
-                    <li>Conventional</li>
-                </ul>
-                <ul>
-                    <li className="active">26 sm.</li>
-                    <li>30 sm.</li>
-                    <li>40 sm.</li>
-                </ul>
-            </div>
+            <img className="pizza-block__image" src={imageLink} alt="Pizza" />
+            <h4 className="pizza-block__title">{name}</h4>
+            <PizzaSpecsButtons id={specId} />
             <div className="pizza-block__data">
                 <p>
-                    Type: <b>With meat</b>
+                    Type: <b>{pizzaType}</b>
                 </p>
                 <br />
                 <p>
-                    Popularity point:<b> 98</b>
+                    Popularity point:<b> {popularityPoint}</b>
                 </p>
             </div>
             <div className="pizza-block__bottom">
                 <div className="pizza-block__price">
-                    <small>from</small> $49{' '}
+                    <small>from</small> {currencySign}
+                    {price}{' '}
                 </div>
                 <AddToCartButton />
             </div>

@@ -1,6 +1,6 @@
-export const generateOneSpec = (): object => {
+export const generateOneSpec = (arrDoughs: object, arrSize: object): object => {
     return {
-        doughType: 'Thin',
-        size: 26,
+        doughTypes: arrDoughs,
+        sizes: arrSize,
     }
 }

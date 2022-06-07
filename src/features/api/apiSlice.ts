@@ -1,46 +1,48 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { createEntityAdapter, createSelector, EntityState } from '@reduxjs/toolkit'
 import { RootState } from '../store/store'
+import { PizzaResponseType, SpecResponseType } from './responseTypes'
 
 const pizzasAdapter = createEntityAdapter()
-const initialState = pizzasAdapter.getInitialState()
+const pizzaInitialState = pizzasAdapter.getInitialState()
 
-interface PizzaResponseType {
-    id: string
-    name: string
-    image: string
-    price: number
-    currencySign: string
-    popularityPoint: number
-    type: string
-    description: string
-    spec: string
-}
+const specsAdapter = createEntityAdapter()
+const specsInitialState = specsAdapter.getInitialState()
+
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
     endpoints: builder => ({
-        getPizzas: builder.query<PizzaResponseType[], void>({
+        getPizzas: builder.query<EntityState<unknown>, void>({
             query: () => '/pizzas',
             transformResponse: (responseData: PizzaResponseType[]) => {
-                pizzasAdapter.setAll(initialState, responseData)
-                return responseData
+                return pizzasAdapter.setAll(pizzaInitialState, responseData)
+            },
+        }),
+        getSpecs: builder.query<EntityState<unknown>, void>({
+            query: () => '/specs',
+            transformResponse: (responseData: SpecResponseType[]) => {
+                return specsAdapter.setAll(specsInitialState, responseData)
             },
         }),
     }),
 })
+// Queries
+export const { useGetPizzasQuery, useGetSpecsQuery } = apiSlice
 
-export const { useGetPizzasQuery } = apiSlice
-
+// Pizzas selectors
 export const selectPizzasResult = apiSlice.endpoints.getPizzas.select()
-
-// console.log(selectPizzasResult)
-
 export const selectPizzasData = createSelector(
     selectPizzasResult,
     pizzasResult => pizzasResult.data
 )
-//
-export const { selectAll: selectAllPizzas } = pizzasAdapter.getSelectors(
-    (state: EntityState<object>) => state
+export const { selectIds: selectPizzaIds, selectById: selectPizzaById } =
+    pizzasAdapter.getSelectors((state: RootState) => selectPizzasData(state) ?? pizzaInitialState)
+export const selectFilteredPizzaIds = createSelector(selectPizzaIds, ids => ids)
+
+// Specs selectors
+export const selectSpecsResult = apiSlice.endpoints.getSpecs.select()
+export const selectSpecsData = createSelector(selectSpecsResult, specsResult => specsResult.data)
+export const { selectById: selectSpecById } = specsAdapter.getSelectors(
+    (state: RootState) => selectSpecsData(state) ?? specsInitialState
 )
