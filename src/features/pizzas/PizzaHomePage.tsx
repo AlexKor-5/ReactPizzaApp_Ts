@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { PizzaCard } from './PizzaCard'
 import { PizzaTags } from './PizzaTags'
 import { PizzaSorting } from './PizzaSorting'
@@ -10,6 +10,16 @@ export const PizzaHomePage: FC = () => {
     const { isLoading, isSuccess, isError } = useGetPizzasQuery()
     const pizzasIds = useSelector(selectFilteredPizzaIds)
 
+    const showContent = (isLoading: boolean, isSuccess: boolean, isError: boolean): ReactNode => {
+        return isLoading ? (
+            <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
+        ) : isSuccess ? (
+            pizzasIds.map(id => <PizzaCard id={id} key={id} />)
+        ) : isError ? (
+            <div>{'Error ...'}</div>
+        ) : null
+    }
+
     return (
         <div className="content">
             <div className="container">
@@ -20,15 +30,7 @@ export const PizzaHomePage: FC = () => {
 
                 <h2 className="content__title">All pizzas</h2>
 
-                <div className="content__items">
-                    {isLoading ? (
-                        <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
-                    ) : isSuccess ? (
-                        pizzasIds.map(id => <PizzaCard id={id} key={id} />)
-                    ) : isError ? (
-                        <div>{'Error ...'}</div>
-                    ) : null}
-                </div>
+                <div className="content__items">{showContent(isLoading, isSuccess, isError)}</div>
             </div>
         </div>
     )

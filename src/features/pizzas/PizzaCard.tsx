@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { AddToCartButton } from '../../components/AddToCartButton/AddToCartButton'
 import { EntityId } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
@@ -33,12 +33,18 @@ export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
         popularityPoint,
         specId,
     } = pizza
+    const [pizzaPrice, setPizzaPrice] = useState<number>(price)
+    const [prevPizzaPrice, setPrevPizzaPrice] = useState<number>(price)
 
     return (
         <div className="pizza-block">
             <img className="pizza-block__image" src={imageLink} alt="Pizza" />
             <h4 className="pizza-block__title">{name}</h4>
-            <PizzaSpecsButtons id={specId} />
+            <PizzaSpecsButtons
+                id={specId}
+                increasePrice={setPizzaPrice}
+                currentPrice={prevPizzaPrice}
+            />
             <div className="pizza-block__data">
                 <p>
                     Type: <b>{pizzaType}</b>
@@ -51,7 +57,7 @@ export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
             <div className="pizza-block__bottom">
                 <div className="pizza-block__price">
                     <small>from</small> {currencySign}
-                    {price}{' '}
+                    {pizzaPrice}{' '}
                 </div>
                 <AddToCartButton />
             </div>

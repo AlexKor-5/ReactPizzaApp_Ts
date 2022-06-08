@@ -8,14 +8,14 @@ import { generateOneSpec } from '../services/generateOneSpec'
 // Сonstants of all faux back-end application
 const FAUX_DELAY_MS = 500
 const PIZZAS_AMOUNT = pizzaImages.length
-const PIZZAS_DOUGHS_TYPES_ARRAY = [
-    { type: 'Thin', priceUp: 0 },
-    { type: 'Conventional', priceUp: 10 },
+const PIZZAS_DOUGHS_TYPES_ARRAY = () => [
+    { id: nanoid(), type: 'Thin', priceUp: 0 },
+    { id: nanoid(), type: 'Conventional', priceUp: 10 },
 ]
-const PIZZA_SIZE_OPTIONS = [
-    { size: 26, priceUp: 0, measurement: 'sm' },
-    { size: 30, priceUp: 10, measurement: 'sm' },
-    { size: 40, priceUp: 20, measurement: 'sm' },
+const PIZZA_SIZE_OPTIONS = () => [
+    { id: nanoid(), size: 26, priceUp: 0, measurement: 'sm' },
+    { id: nanoid(), size: 30, priceUp: 10, measurement: 'sm' },
+    { id: nanoid(), size: 40, priceUp: 20, measurement: 'sm' },
 ]
 // MSW Data Model Setup
 export const db = factory({
@@ -46,6 +46,11 @@ export const db = factory({
 for (let i = 0; i < PIZZAS_AMOUNT; i++) {
     const spec = db.spec.create(generateOneSpec(PIZZAS_DOUGHS_TYPES_ARRAY, PIZZA_SIZE_OPTIONS))
     db.pizza.create(generateOnePizza(pizzaNames[i], pizzaImages[i], spec))
+    // db.spec.update({
+    //     where: {
+    //         id: {},
+    //     },
+    // })
 }
 // console.log('db = ', db.pizza.getAll())
 
@@ -66,7 +71,7 @@ export const handlers = [
         return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(allPizzas))
     }),
     rest.get('/specs', (req, res, ctx) => {
-        const allSpecs = db.spec.getAll()
+        const allSpecs = db.spec.getAll().map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
         return res(ctx.delay(2000), ctx.status(200), ctx.json(allSpecs))
     }),
     rest.get('/spec', (req, res, ctx) => {
