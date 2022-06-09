@@ -19,6 +19,9 @@ export const apiSlice = createApi({
                 return pizzasAdapter.setAll(pizzaInitialState, responseData)
             },
         }),
+        getPizza: builder.query({
+            query: pizzaId => `/pizzas/${pizzaId}`,
+        }),
         getSpecs: builder.query<EntityState<unknown>, void>({
             query: () => '/specs',
             transformResponse: (responseData: SpecResponseType[]) => {
@@ -28,7 +31,7 @@ export const apiSlice = createApi({
     }),
 })
 // Queries
-export const { useGetPizzasQuery, useGetSpecsQuery } = apiSlice
+export const { useGetPizzasQuery, useGetPizzaQuery, useGetSpecsQuery } = apiSlice
 
 // Pizzas selectors
 export const selectPizzasResult = apiSlice.endpoints.getPizzas.select()

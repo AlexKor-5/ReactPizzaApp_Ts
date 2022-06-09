@@ -5,21 +5,11 @@ import { useSelector } from 'react-redux'
 import { selectPizzaById } from '../api/apiSlice'
 import { RootState } from '../store/store'
 import { PizzaSpecsButtons } from './PizzaSpecsButtons'
+import { Link } from 'react-router-dom'
+import { PizzaType } from '../../types/pizzaTypes'
 
 interface PizzaCardPropsType {
     id: EntityId
-}
-
-interface PizzaType {
-    currencySign: string
-    description: string
-    id: string
-    image: string
-    name: string
-    popularityPoint: number
-    price: number
-    specId: string
-    type: string
 }
 
 export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
@@ -38,8 +28,10 @@ export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
 
     return (
         <div className="pizza-block">
-            <img className="pizza-block__image" src={imageLink} alt="Pizza" />
-            <h4 className="pizza-block__title">{name}</h4>
+            <Link to={`pizzas/${pizza.id}`}>
+                <img className="pizza-block__image" src={imageLink} alt="Pizza" />
+                <h4 className="pizza-block__title">{name}</h4>
+            </Link>
             <PizzaSpecsButtons
                 id={specId}
                 increasePrice={setPizzaPrice}

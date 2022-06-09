@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { Link } from 'react-router-dom'
 
 export const CartBottom: FC = () => {
     return (
@@ -14,7 +15,7 @@ export const CartBottom: FC = () => {
                 </span>
             </div>
             <div className="cart__bottom-buttons">
-                <a href="/" className="button button--outline button--add go-back-btn">
+                <Link to={`/`} className="button button--outline button--add go-back-btn">
                     <svg
                         width="8"
                         height="14"
@@ -32,7 +33,7 @@ export const CartBottom: FC = () => {
                     </svg>
 
                     <span>Back</span>
-                </a>
+                </Link>
                 <div className="button pay-btn">
                     <span>Order now</span>
                 </div>

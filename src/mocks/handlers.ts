@@ -74,7 +74,17 @@ export const handlers = [
         const allSpecs = db.spec.getAll().map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
         return res(ctx.delay(2000), ctx.status(200), ctx.json(allSpecs))
     }),
-    rest.get('/spec', (req, res, ctx) => {
-        return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json([]))
+    rest.get('/pizzas/:pizzaId', (req, res, ctx) => {
+        const pizza = db.pizza.findFirst({
+            where: {
+                id: {
+                    /* eslint-disable */
+                    // @ts-ignore
+                    equals: req.params.pizzaId,
+                    /* eslint-enable */
+                },
+            },
+        })
+        return res(ctx.delay(FAUX_DELAY_MS), ctx.json(pizza))
     }),
 ]

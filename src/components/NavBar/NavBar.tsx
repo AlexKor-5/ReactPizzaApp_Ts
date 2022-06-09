@@ -1,19 +1,22 @@
 import React, { FC } from 'react'
 import { IoMdPizza } from 'react-icons/io'
+import { Link } from 'react-router-dom'
 
 export const NavBar: FC = () => {
     return (
         <div className="header">
             <div className="container">
-                <div className="header__logo">
-                    <IoMdPizza size={'50px'} />
-                    <div>
-                        <h1>React Pizza</h1>
-                        <p>The tasties pizza in the world</p>
+                <Link to={`/`}>
+                    <div className="header__logo">
+                        <IoMdPizza size={'50px'} />
+                        <div>
+                            <h1>React Pizza</h1>
+                            <p>The tasties pizza in the world</p>
+                        </div>
                     </div>
-                </div>
+                </Link>
                 <div className="header__cart">
-                    <a href="/" className="button button--cart">
+                    <Link to={`/cart`} className="button button--cart">
                         <span>$98</span>
                         <div className="button__delimiter">{''}</div>
                         <svg
@@ -46,7 +49,7 @@ export const NavBar: FC = () => {
                             />
                         </svg>
                         <span>2</span>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
