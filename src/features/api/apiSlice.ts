@@ -1,13 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { createEntityAdapter, createSelector, EntityState } from '@reduxjs/toolkit'
 import { RootState } from '../store/store'
-import { PizzaResponseType, SpecResponseType } from './responseTypes'
+import { PizzaType, SpecType } from '../../types/pizzaTypes'
 
 const pizzasAdapter = createEntityAdapter()
 const pizzaInitialState = pizzasAdapter.getInitialState()
 
-const specsAdapter = createEntityAdapter()
-const specsInitialState = specsAdapter.getInitialState()
+// const specsAdapter = createEntityAdapter()
+// const specsInitialState = specsAdapter.getInitialState()
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -15,18 +15,15 @@ export const apiSlice = createApi({
     endpoints: builder => ({
         getPizzas: builder.query<EntityState<unknown>, void>({
             query: () => '/pizzas',
-            transformResponse: (responseData: PizzaResponseType[]) => {
+            transformResponse: (responseData: PizzaType[]) => {
                 return pizzasAdapter.setAll(pizzaInitialState, responseData)
             },
         }),
         getPizza: builder.query({
             query: pizzaId => `/pizzas/${pizzaId}`,
         }),
-        getSpecs: builder.query<EntityState<unknown>, void>({
+        getSpecs: builder.query<SpecType[], void>({
             query: () => '/specs',
-            transformResponse: (responseData: SpecResponseType[]) => {
-                return specsAdapter.setAll(specsInitialState, responseData)
-            },
         }),
     }),
 })
@@ -44,8 +41,8 @@ export const { selectIds: selectPizzaIds, selectById: selectPizzaById } =
 export const selectFilteredPizzaIds = createSelector(selectPizzaIds, ids => ids)
 
 // Specs selectors
-export const selectSpecsResult = apiSlice.endpoints.getSpecs.select()
-export const selectSpecsData = createSelector(selectSpecsResult, specsResult => specsResult.data)
-export const { selectById: selectSpecById } = specsAdapter.getSelectors(
-    (state: RootState) => selectSpecsData(state) ?? specsInitialState
-)
+// export const selectSpecsResult = apiSlice.endpoints.getSpecs.select()
+// export const selectSpecsData = createSelector(selectSpecsResult, specsResult => specsResult.data)
+// export const { selectById: selectSpecById } = specsAdapter.getSelectors(
+//     (state: RootState) => selectSpecsData(state) ?? specsInitialState
+// )

@@ -7,7 +7,7 @@ import MoonLoader from 'react-spinners/MoonLoader'
 import { useSelector } from 'react-redux'
 
 export const PizzaHomePage: FC = () => {
-    const { isLoading, isSuccess, isError } = useGetPizzasQuery()
+    const { data, isLoading, isSuccess, isError } = useGetPizzasQuery()
     const pizzasIds = useSelector(selectFilteredPizzaIds)
 
     const showContent = (isLoading: boolean, isSuccess: boolean, isError: boolean): ReactNode => {
@@ -19,6 +19,8 @@ export const PizzaHomePage: FC = () => {
             <div>{'Error ...'}</div>
         ) : null
     }
+
+    // console.log(data)
 
     return (
         <div className="content">

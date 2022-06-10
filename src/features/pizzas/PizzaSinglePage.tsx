@@ -4,12 +4,17 @@ import { useParams } from 'react-router-dom'
 import { useGetPizzaQuery } from '../api/apiSlice'
 import MoonLoader from 'react-spinners/MoonLoader'
 import { PizzaType } from '../../types/pizzaTypes'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { SerializedError } from '@reduxjs/toolkit'
 
 export const PizzaSinglePage: FC = () => {
     const { pizzaId } = useParams()
-    const { data, isLoading, isSuccess, isError } = useGetPizzaQuery(pizzaId)
+    const { data, isLoading, isSuccess, isError, error } = useGetPizzaQuery(pizzaId)
 
-    const displayPizzaData = (data: PizzaType): ReactNode => {
+    const displayPizzaData = (
+        data: PizzaType,
+        error: FetchBaseQueryError | SerializedError | undefined
+    ): ReactNode => {
         return isLoading ? (
             <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
         ) : isSuccess ? (
@@ -62,9 +67,14 @@ export const PizzaSinglePage: FC = () => {
                 </div>
             </>
         ) : isError ? (
-            <div>{'Error ...'}</div>
+            <>
+                <div>{'Error ...'}</div>
+                <div>
+                    <span>{JSON.stringify(error, undefined, 2)}</span>
+                </div>
+            </>
         ) : null
     }
 
-    return <div className="pizzaSingle">{displayPizzaData(data)}</div>
+    return <div className="pizzaSingle">{displayPizzaData(data, error)}</div>
 }

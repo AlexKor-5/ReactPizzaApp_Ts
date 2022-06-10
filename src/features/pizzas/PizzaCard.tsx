@@ -24,7 +24,7 @@ export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
         specId,
     } = pizza
     const [pizzaPrice, setPizzaPrice] = useState<number>(price)
-    const [prevPizzaPrice, setPrevPizzaPrice] = useState<number>(price)
+    const [prevPizzaPrice] = useState<number>(price)
 
     return (
         <div className="pizza-block">

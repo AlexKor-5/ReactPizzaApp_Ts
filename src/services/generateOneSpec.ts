@@ -1,10 +1,12 @@
 export const generateOneSpec = (
     arrDoughsFun: () => object[],
-    arrSizeFun: () => object[]
+    arrSizeFun: () => object[],
+    defaultValues: { doughType: string; size: number }
 ): object => {
     return {
         doughTypes: arrDoughsFun(),
         sizes: arrSizeFun(),
-        pizza: '',
+        chosenDoughType: defaultValues.doughType,
+        chosenSize: defaultValues.size,
     }
 }

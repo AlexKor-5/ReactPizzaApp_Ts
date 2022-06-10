@@ -1,5 +1,5 @@
 import React, { Dispatch, FC, SetStateAction, useState, ReactNode } from 'react'
-import { selectSpecById, useGetSpecsQuery } from '../api/apiSlice'
+import { useGetSpecsQuery } from '../api/apiSlice'
 import ClipLoader from 'react-spinners/ClipLoader'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
@@ -34,49 +34,54 @@ export const PizzaSpecsButtons: FC<PizzaSpecsButtonsPropsType> = ({
     increasePrice,
     currentPrice,
 }) => {
-    const { isLoading, isSuccess, isError } = useGetSpecsQuery()
-    const spec = useSelector((state: RootState) => selectSpecById(state, id)) as SpecType
-    const [doughTypeCurrent, setDoughTypeCurrent] = useState<string>('')
-    const [chosenDoughTypeBtn, setChosenDoughTypeBtn] = useState<string>('Thin')
+    const { data, isLoading, isSuccess, isError } = useGetSpecsQuery()
+    // const spec = useSelector((state: RootState) => selectSpecById(state, id)) as SpecType
+    // const [doughTypeCurrent, setDoughTypeCurrent] = useState<string>('')
+    // const [chosenDoughTypeBtn, setChosenDoughTypeBtn] = useState<string>('Thin')
 
-    const handleClickOnDoughTypeButton = (object: ClickOnDoughTypeButtonType): void => {
-        const { item, currentPrice, setChosenDoughTypeBtn, increasePrice } = object
-        setChosenDoughTypeBtn(item.type)
-        setDoughTypeCurrent(item.id)
-        increasePrice(currentPrice)
-        increasePrice(prev => prev + item.priceUp)
-    }
+    // if (isSuccess) {
+    //     // console.log('pizza ID= ', id)
+    //     console.log(data)
+    // }
 
-    const runDoughTypeButtons = (spec: SpecType): ReactNode => {
-        return spec.doughTypes.map((item: DoughTypesType, index: number) => {
-            return (
-                <li
-                    key={index}
-                    className={
-                        chosenDoughTypeBtn === item.type ?? doughTypeCurrent === item.id
-                            ? 'active'
-                            : ''
-                    }
-                >
-                    <div
-                        role="button"
-                        onClick={() =>
-                            handleClickOnDoughTypeButton({
-                                item,
-                                increasePrice,
-                                currentPrice,
-                                setChosenDoughTypeBtn,
-                            })
-                        }
-                        onKeyPress={f => f}
-                        tabIndex={0}
-                    >
-                        {item.type}
-                    </div>
-                </li>
-            )
-        })
-    }
+    // const handleClickOnDoughTypeButton = (object: ClickOnDoughTypeButtonType): void => {
+    //     const { item, currentPrice, setChosenDoughTypeBtn, increasePrice } = object
+    //     setChosenDoughTypeBtn(item.type)
+    //     setDoughTypeCurrent(item.id)
+    //     increasePrice(currentPrice)
+    //     increasePrice(prev => prev + item.priceUp)
+    // }
+
+    // const runDoughTypeButtons = (spec: SpecType): ReactNode => {
+    //     return spec.doughTypes.map((item: DoughTypesType, index: number) => {
+    //         return (
+    //             <li
+    //                 key={index}
+    //                 className={
+    //                     chosenDoughTypeBtn === item.type ?? doughTypeCurrent === item.id
+    //                         ? 'active'
+    //                         : ''
+    //                 }
+    //             >
+    //                 <div
+    //                     role="button"
+    //                     onClick={() =>
+    //                         handleClickOnDoughTypeButton({
+    //                             item,
+    //                             increasePrice,
+    //                             currentPrice,
+    //                             setChosenDoughTypeBtn,
+    //                         })
+    //                     }
+    //                     onKeyPress={f => f}
+    //                     tabIndex={0}
+    //                 >
+    //                     {item.type}
+    //                 </div>
+    //             </li>
+    //         )
+    //     })
+    // }
 
     return isLoading ? (
         <div className="mooLoader">
@@ -84,7 +89,11 @@ export const PizzaSpecsButtons: FC<PizzaSpecsButtonsPropsType> = ({
         </div>
     ) : isSuccess ? (
         <div className="pizza-block__selector">
-            <ul>{runDoughTypeButtons(spec)}</ul>
+            <ul>
+                {
+                    // runDoughTypeButtons(spec)
+                }
+            </ul>
             <ul>
                 <li className="active">26 sm.</li>
                 <li>30 sm.</li>

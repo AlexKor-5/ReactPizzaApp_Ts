@@ -4,19 +4,14 @@ import { nanoid } from '@reduxjs/toolkit'
 import { factory, primaryKey, oneOf } from '@mswjs/data'
 import { generateOnePizza } from '../services/generateOnePizza'
 import { generateOneSpec } from '../services/generateOneSpec'
+import {
+    FAUX_DELAY_MS,
+    PIZZAS_AMOUNT,
+    PIZZAS_DOUGHS_TYPES_OPTIONS,
+    PIZZA_SIZE_OPTIONS,
+    DEFAULT_CHOSEN_VALUES,
+} from './constants'
 
-// Сonstants of all faux back-end application
-const FAUX_DELAY_MS = 500
-const PIZZAS_AMOUNT = pizzaImages.length
-const PIZZAS_DOUGHS_TYPES_ARRAY = () => [
-    { id: nanoid(), type: 'Thin', priceUp: 0 },
-    { id: nanoid(), type: 'Conventional', priceUp: 10 },
-]
-const PIZZA_SIZE_OPTIONS = () => [
-    { id: nanoid(), size: 26, priceUp: 0, measurement: 'sm' },
-    { id: nanoid(), size: 30, priceUp: 10, measurement: 'sm' },
-    { id: nanoid(), size: 40, priceUp: 20, measurement: 'sm' },
-]
 // MSW Data Model Setup
 export const db = factory({
     pizza: {
@@ -34,6 +29,9 @@ export const db = factory({
         id: primaryKey(nanoid),
         doughTypes: Array,
         sizes: Array,
+        chosenDoughType: String,
+        chosenSize: Number,
+        pizzaId: String,
         pizza: oneOf('pizza'),
     },
     pizzaInCart: {
@@ -44,15 +42,23 @@ export const db = factory({
 })
 
 for (let i = 0; i < PIZZAS_AMOUNT; i++) {
-    const spec = db.spec.create(generateOneSpec(PIZZAS_DOUGHS_TYPES_ARRAY, PIZZA_SIZE_OPTIONS))
-    db.pizza.create(generateOnePizza(pizzaNames[i], pizzaImages[i], spec))
-    // db.spec.update({
-    //     where: {
-    //         id: {},
-    //     },
-    // })
+    const spec = db.spec.create(
+        generateOneSpec(PIZZAS_DOUGHS_TYPES_OPTIONS, PIZZA_SIZE_OPTIONS, DEFAULT_CHOSEN_VALUES)
+    )
+    const lastSpecId = db.spec.getAll()[db.spec.getAll().length - 1].id
+    const pizza = db.pizza.create(generateOnePizza(pizzaNames[i], pizzaImages[i], spec))
+    // add pizzaId value to 'spec table'
+    db.spec.update({
+        where: {
+            id: {
+                equals: lastSpecId,
+            },
+        },
+        data: {
+            pizzaId: pizza.id,
+        },
+    })
 }
-// console.log('db = ', db.pizza.getAll())
 
 interface PizzaPropType {
     specId: {
@@ -71,8 +77,9 @@ export const handlers = [
         return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(allPizzas))
     }),
     rest.get('/specs', (req, res, ctx) => {
-        const allSpecs = db.spec.getAll().map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
-        return res(ctx.delay(2000), ctx.status(200), ctx.json(allSpecs))
+        const allSpecs = db.spec.getAll()
+        // .map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
+        return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(allSpecs))
     }),
     rest.get('/pizzas/:pizzaId', (req, res, ctx) => {
         const pizza = db.pizza.findFirst({
@@ -85,6 +92,13 @@ export const handlers = [
                 },
             },
         })
+        if (!pizza) {
+            return res(
+                ctx.delay(FAUX_DELAY_MS),
+                ctx.status(404),
+                ctx.json('That pizza has not been found!')
+            )
+        }
         return res(ctx.delay(FAUX_DELAY_MS), ctx.json(pizza))
     }),
 ]
