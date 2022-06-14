@@ -14,7 +14,7 @@ export const PizzaHomePage: FC = () => {
         return isLoading ? (
             <MoonLoader loading={isLoading} size={100} color={'#fe5f1e'} />
         ) : isSuccess ? (
-            pizzasIds.map(id => <PizzaCard id={id} key={id} />)
+            pizzasIds.map((id) => <PizzaCard id={id} key={id} />)
         ) : isError ? (
             <div>{'Error ...'}</div>
         ) : null

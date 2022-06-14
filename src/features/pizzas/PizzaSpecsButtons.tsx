@@ -1,87 +1,103 @@
-import React, { Dispatch, FC, SetStateAction, useState, ReactNode } from 'react'
-import { useGetSpecsQuery } from '../api/apiSlice'
+import React, {
+    Dispatch,
+    FC,
+    ReactNode,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react'
+import { useChangeChosenDoughTypeMutation, useGetSpecsQuery } from '../api/apiSlice'
 import ClipLoader from 'react-spinners/ClipLoader'
-import { useSelector } from 'react-redux'
-import { RootState } from '../store/store'
+import { IDoughType, ISpecType } from '../../types/pizzaTypes'
 
-interface SpecType {
-    id: string
-    doughTypes: DoughTypesType[]
-    sizes: object[]
+interface IPizzaSpecsButtonsProps {
+    specId: string
+    increasePrice?: Dispatch<SetStateAction<number>>
+    staticPrice?: number
 }
 
-interface DoughTypesType {
-    id: string
-    type: string
-    priceUp: number
+interface IRunDoughTypeButtonsProps {
+    single: ISpecType
+    doughTypeTarget: string
+    defaultDoughTypeBtn: string
 }
 
-interface PizzaSpecsButtonsPropsType {
-    id: string
-    increasePrice: Dispatch<SetStateAction<number>>
-    currentPrice: number
-}
-
-interface ClickOnDoughTypeButtonType {
-    item: { id: string; priceUp: number; type: string }
-    increasePrice: Dispatch<SetStateAction<number>>
-    currentPrice: number
-    setChosenDoughTypeBtn: Dispatch<SetStateAction<string>>
-}
-
-export const PizzaSpecsButtons: FC<PizzaSpecsButtonsPropsType> = ({
-    id,
-    increasePrice,
-    currentPrice,
+export const PizzaSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
+    specId,
+    increasePrice = (f) => f,
+    staticPrice = 0,
 }) => {
-    const { data, isLoading, isSuccess, isError } = useGetSpecsQuery()
-    // const spec = useSelector((state: RootState) => selectSpecById(state, id)) as SpecType
-    // const [doughTypeCurrent, setDoughTypeCurrent] = useState<string>('')
-    // const [chosenDoughTypeBtn, setChosenDoughTypeBtn] = useState<string>('Thin')
+    const [defaultDoughTypeBtn, setDefaultDoughTypeBtn] = useState<string>('')
+    const [doughTypeTarget, setDoughTypeTarget] = useState<string>('')
 
-    // if (isSuccess) {
-    //     // console.log('pizza ID= ', id)
-    //     console.log(data)
-    // }
+    const selector = useCallback((data: ISpecType[] | undefined, specId: string) => {
+        return data?.filter((item) => {
+            return item.id === specId
+        })
+    }, [])
 
-    // const handleClickOnDoughTypeButton = (object: ClickOnDoughTypeButtonType): void => {
-    //     const { item, currentPrice, setChosenDoughTypeBtn, increasePrice } = object
-    //     setChosenDoughTypeBtn(item.type)
-    //     setDoughTypeCurrent(item.id)
-    //     increasePrice(currentPrice)
-    //     increasePrice(prev => prev + item.priceUp)
-    // }
+    const { data, isLoading, isSuccess, isError } = useGetSpecsQuery(undefined, {
+        selectFromResult: (result) => ({
+            ...result,
+            data: selector(result?.data, specId),
+        }),
+    })
+    const [single]: (ISpecType | undefined)[] | undefined = data ?? []
 
-    // const runDoughTypeButtons = (spec: SpecType): ReactNode => {
-    //     return spec.doughTypes.map((item: DoughTypesType, index: number) => {
-    //         return (
-    //             <li
-    //                 key={index}
-    //                 className={
-    //                     chosenDoughTypeBtn === item.type ?? doughTypeCurrent === item.id
-    //                         ? 'active'
-    //                         : ''
-    //                 }
-    //             >
-    //                 <div
-    //                     role="button"
-    //                     onClick={() =>
-    //                         handleClickOnDoughTypeButton({
-    //                             item,
-    //                             increasePrice,
-    //                             currentPrice,
-    //                             setChosenDoughTypeBtn,
-    //                         })
-    //                     }
-    //                     onKeyPress={f => f}
-    //                     tabIndex={0}
-    //                 >
-    //                     {item.type}
-    //                 </div>
-    //             </li>
-    //         )
-    //     })
-    // }
+    useEffect(() => {
+        setDefaultDoughTypeBtn(single?.chosenDoughType)
+    }, [single])
+
+    const [changeChosenDoughType] = useChangeChosenDoughTypeMutation()
+
+    const handleClick = async (btnID: string, btnType: string, specID: string, priceUp: number) => {
+        setDoughTypeTarget(btnID)
+        setDefaultDoughTypeBtn('clear default value')
+        increasePrice(staticPrice)
+        increasePrice((prev) => prev + priceUp)
+        if (btnType !== defaultDoughTypeBtn) {
+            // console.log(btnType, specID)
+            try {
+                await changeChosenDoughType({
+                    specID,
+                    gottenType: btnType,
+                }).unwrap()
+            } catch (e) {
+                console.error('Failed to post spec data: ', e)
+            }
+        }
+    }
+    // console.log(useChangeChosenDoughTypeMutation())
+
+    const runDoughTypeButtons = (object: IRunDoughTypeButtonsProps): ReactNode => {
+        const { doughTypes, id: specID } = object.single
+        const { doughTypeTarget, defaultDoughTypeBtn } = object
+
+        return doughTypes.map((btn: IDoughType) => {
+            return (
+                <li
+                    className={
+                        defaultDoughTypeBtn === btn.type
+                            ? 'active'
+                            : doughTypeTarget === btn.id
+                            ? 'active'
+                            : ''
+                    }
+                    key={btn.id}
+                >
+                    <div
+                        role="button"
+                        onKeyPress={(f) => f}
+                        tabIndex={0}
+                        onClick={() => handleClick(btn.id, btn.type, specID, btn.priceUp)}
+                    >
+                        {btn.type}
+                    </div>
+                </li>
+            )
+        })
+    }
 
     return isLoading ? (
         <div className="mooLoader">
@@ -89,11 +105,7 @@ export const PizzaSpecsButtons: FC<PizzaSpecsButtonsPropsType> = ({
         </div>
     ) : isSuccess ? (
         <div className="pizza-block__selector">
-            <ul>
-                {
-                    // runDoughTypeButtons(spec)
-                }
-            </ul>
+            <ul>{runDoughTypeButtons({ single, doughTypeTarget, defaultDoughTypeBtn })}</ul>
             <ul>
                 <li className="active">26 sm.</li>
                 <li>30 sm.</li>
@@ -104,3 +116,7 @@ export const PizzaSpecsButtons: FC<PizzaSpecsButtonsPropsType> = ({
         <div>{'Error ...'}</div>
     ) : null
 }
+//
+// console.log('item = ', item)
+// console.log('item.id = ', item.id)
+// console.log('specId = ', specId)

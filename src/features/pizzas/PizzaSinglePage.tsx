@@ -3,16 +3,19 @@ import { AddToCartButton } from '../../components/AddToCartButton/AddToCartButto
 import { useParams } from 'react-router-dom'
 import { useGetPizzaQuery } from '../api/apiSlice'
 import MoonLoader from 'react-spinners/MoonLoader'
-import { PizzaType } from '../../types/pizzaTypes'
+import { IPizzaType } from '../../types/pizzaTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { SerializedError } from '@reduxjs/toolkit'
+import { PizzaSpecsButtons } from './PizzaSpecsButtons'
 
 export const PizzaSinglePage: FC = () => {
     const { pizzaId } = useParams()
     const { data, isLoading, isSuccess, isError, error } = useGetPizzaQuery(pizzaId)
 
+    console.log('single page data = ', data)
+
     const displayPizzaData = (
-        data: PizzaType,
+        data: IPizzaType,
         error: FetchBaseQueryError | SerializedError | undefined
     ): ReactNode => {
         return isLoading ? (
@@ -27,17 +30,7 @@ export const PizzaSinglePage: FC = () => {
                         <h4>{data.name}</h4>
                     </div>
 
-                    <div className="pizza-block__selector">
-                        <ul>
-                            <li className="active">Thin</li>
-                            <li>Conventional</li>
-                        </ul>
-                        <ul>
-                            <li className="active">26 sm.</li>
-                            <li>30 sm.</li>
-                            <li>40 sm.</li>
-                        </ul>
-                    </div>
+                    <PizzaSpecsButtons specId={data.specId} />
 
                     <div className="pizza-block__data">
                         <p>

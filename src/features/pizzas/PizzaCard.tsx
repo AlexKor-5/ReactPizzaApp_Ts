@@ -6,14 +6,14 @@ import { selectPizzaById } from '../api/apiSlice'
 import { RootState } from '../store/store'
 import { PizzaSpecsButtons } from './PizzaSpecsButtons'
 import { Link } from 'react-router-dom'
-import { PizzaType } from '../../types/pizzaTypes'
+import { IPizzaType } from '../../types/pizzaTypes'
 
-interface PizzaCardPropsType {
+interface IPizzaCardProps {
     id: EntityId
 }
 
-export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
-    const pizza = useSelector((state: RootState) => selectPizzaById(state, id)) as PizzaType
+export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
+    const pizza = useSelector((state: RootState) => selectPizzaById(state, id)) as IPizzaType
     const {
         image: imageLink,
         name,
@@ -33,9 +33,9 @@ export const PizzaCard: FC<PizzaCardPropsType> = ({ id }) => {
                 <h4 className="pizza-block__title">{name}</h4>
             </Link>
             <PizzaSpecsButtons
-                id={specId}
+                specId={specId}
                 increasePrice={setPizzaPrice}
-                currentPrice={prevPizzaPrice}
+                staticPrice={prevPizzaPrice}
             />
             <div className="pizza-block__data">
                 <p>

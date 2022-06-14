@@ -1,4 +1,4 @@
-export interface PizzaType {
+export interface IPizzaType {
     id: string
     currencySign: string
     description: string
@@ -9,11 +9,16 @@ export interface PizzaType {
     specId: string
     type: string
 }
-export interface SpecType {
+export interface ISpecType {
     id: string
-    doughTypes: object[]
+    doughTypes: IDoughType[]
     sizes: object[]
     chosenDoughType: string
     chosenSize: number
-    pizza: string
+    pizzaId: string
+}
+export interface IDoughType {
+    id: string
+    type: string
+    priceUp: number
 }
