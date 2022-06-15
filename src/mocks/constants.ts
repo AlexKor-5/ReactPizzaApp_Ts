@@ -2,7 +2,8 @@ import { pizzaImages } from './dataResponse'
 import { nanoid } from '@reduxjs/toolkit'
 
 // Сonstants of all faux back-end application
-export const FAUX_DELAY_MS = 200
+export const FAUX_DELAY_MS = 1000
+export const FAUX_DELAY_MS_LONG = 2000
 export const PIZZAS_AMOUNT = pizzaImages.length
 
 export const PIZZAS_DOUGHS_TYPES_OPTIONS = () => [

@@ -12,8 +12,6 @@ export const PizzaSinglePage: FC = () => {
     const { pizzaId } = useParams()
     const { data, isLoading, isSuccess, isError, error } = useGetPizzaQuery(pizzaId)
 
-    console.log('single page data = ', data)
-
     const displayPizzaData = (
         data: IPizzaType,
         error: FetchBaseQueryError | SerializedError | undefined

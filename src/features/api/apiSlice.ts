@@ -18,6 +18,7 @@ interface IQueryParamProps {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
+    tagTypes: ['Pizza', 'Spec'],
     endpoints: (builder) => ({
         getPizzas: builder.query<EntityState<unknown>, void>({
             query: () => '/pizzas',
@@ -30,13 +31,15 @@ export const apiSlice = createApi({
         }),
         getSpecs: builder.query<ISpecType[], void>({
             query: () => '/specs',
+            providesTags: ['Spec'],
         }),
         changeChosenDoughType: builder.mutation<string | FetchArgs, IQueryParamProps>({
             query: (obj: IQueryParamProps) => ({
                 url: `/specs/${obj.specID}/doughType`,
-                method: `POST`,
+                method: `PATCH`,
                 body: obj.gottenType,
             }),
+            invalidatesTags: ['Spec'],
         }),
     }),
 })

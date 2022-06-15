@@ -8,6 +8,7 @@ import {
     PIZZAS_DOUGHS_TYPES_OPTIONS,
     PIZZA_SIZE_OPTIONS,
     DEFAULT_CHOSEN_VALUES,
+    FAUX_DELAY_MS_LONG,
 } from './constants'
 import { db } from './dataModel'
 
@@ -45,7 +46,7 @@ export const handlers = [
     rest.get('/specs', (req, res, ctx) => {
         const currentSpec = db.spec.getAll()
         // .map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
-        return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(currentSpec))
+        return res(ctx.delay(FAUX_DELAY_MS_LONG), ctx.status(200), ctx.json(currentSpec))
     }),
     rest.get('/pizzas/:pizzaId', (req, res, ctx) => {
         // console.log('req = ', req)
@@ -72,16 +73,8 @@ export const handlers = [
         // if success
         return res(ctx.delay(FAUX_DELAY_MS), ctx.json(pizza))
     }),
-    rest.post('/specs/:specID/doughType', (req, res, ctx) => {
+    rest.patch('/specs/:specID/doughType', (req, res, ctx) => {
         const { body, params } = req
-        // const foundSpec = db.spec.findFirst({
-        //     where: {
-        //         id: {
-        //             equals: params.specID,
-        //         },
-        //     },
-        // })
-        // console.log(foundSpec)
         db.spec.update({
             where: {
                 id: {
@@ -92,7 +85,6 @@ export const handlers = [
                 chosenDoughType: body,
             },
         })
-
-        return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200))
+        return res(ctx.status(200))
     }),
 ]

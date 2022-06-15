@@ -37,13 +37,16 @@ export const PizzaSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
         })
     }, [])
 
-    const { data, isLoading, isSuccess, isError } = useGetSpecsQuery(undefined, {
+    const { data, isLoading, isSuccess, isError, isFetching } = useGetSpecsQuery(undefined, {
         selectFromResult: (result) => ({
             ...result,
             data: selector(result?.data, specId),
         }),
     })
     const [single]: (ISpecType | undefined)[] | undefined = data ?? []
+
+    // console.log('isLoading = ', isLoading)
+    // console.log('isFetching = ', isFetching)
 
     useEffect(() => {
         setDefaultDoughTypeBtn(single?.chosenDoughType)
@@ -78,9 +81,7 @@ export const PizzaSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
             return (
                 <li
                     className={
-                        defaultDoughTypeBtn === btn.type
-                            ? 'active'
-                            : doughTypeTarget === btn.id
+                        defaultDoughTypeBtn === btn.type || doughTypeTarget === btn.id
                             ? 'active'
                             : ''
                     }
@@ -99,9 +100,9 @@ export const PizzaSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
         })
     }
 
-    return isLoading ? (
+    return isLoading || isFetching ? (
         <div className="mooLoader">
-            <ClipLoader loading={isLoading} size={30} color={'#fe5f1e'} />
+            <ClipLoader loading={isLoading || isFetching} size={30} color={'#fe5f1e'} />
         </div>
     ) : isSuccess ? (
         <div className="pizza-block__selector">
