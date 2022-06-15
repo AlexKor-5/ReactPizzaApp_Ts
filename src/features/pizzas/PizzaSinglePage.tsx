@@ -6,7 +6,8 @@ import MoonLoader from 'react-spinners/MoonLoader'
 import { IPizzaType } from '../../types/pizzaTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { SerializedError } from '@reduxjs/toolkit'
-import { PizzaSpecsButtons } from './PizzaSpecsButtons'
+// import { PizzaRequestSpecsButtons } from './PizzaRequestSpecsButtons'
+import { PizzaOneSpec } from './PizzaOneSpec'
 
 export const PizzaSinglePage: FC = () => {
     const { pizzaId } = useParams()
@@ -28,7 +29,8 @@ export const PizzaSinglePage: FC = () => {
                         <h4>{data.name}</h4>
                     </div>
 
-                    <PizzaSpecsButtons specId={data.specId} />
+                    {/*<PizzaRequestSpecsButtons specId={data.specId} />*/}
+                    <PizzaOneSpec specId={data.specId} />
 
                     <div className="pizza-block__data">
                         <p>

@@ -23,7 +23,7 @@ interface IRunDoughTypeButtonsProps {
     defaultDoughTypeBtn: string
 }
 
-export const PizzaSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
+export const PizzaRequestSpecsButtons: FC<IPizzaSpecsButtonsProps> = ({
     specId,
     increasePrice = (f) => f,
     staticPrice = 0,

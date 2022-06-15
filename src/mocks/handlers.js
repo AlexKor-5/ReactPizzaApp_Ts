@@ -48,6 +48,16 @@ export const handlers = [
         // .map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
         return res(ctx.delay(FAUX_DELAY_MS_LONG), ctx.status(200), ctx.json(currentSpec))
     }),
+    rest.get('/specs/:specId', (req, res, ctx) => {
+        const oneSpec = db.spec.findFirst({
+            where: {
+                id: {
+                    equals: req.params.specId,
+                },
+            },
+        })
+        return res(ctx.status(200), ctx.json(oneSpec))
+    }),
     rest.get('/pizzas/:pizzaId', (req, res, ctx) => {
         // console.log('req = ', req)
         let pizza = db.pizza.findFirst({

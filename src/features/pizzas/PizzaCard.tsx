@@ -4,7 +4,7 @@ import { EntityId } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { selectPizzaById } from '../api/apiSlice'
 import { RootState } from '../store/store'
-import { PizzaSpecsButtons } from './PizzaSpecsButtons'
+import { PizzaRequestSpecsButtons } from './PizzaRequestSpecsButtons'
 import { Link } from 'react-router-dom'
 import { IPizzaType } from '../../types/pizzaTypes'
 
@@ -32,7 +32,7 @@ export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
                 <img className="pizza-block__image" src={imageLink} alt="Pizza" />
                 <h4 className="pizza-block__title">{name}</h4>
             </Link>
-            <PizzaSpecsButtons
+            <PizzaRequestSpecsButtons
                 specId={specId}
                 increasePrice={setPizzaPrice}
                 staticPrice={prevPizzaPrice}

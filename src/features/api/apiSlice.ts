@@ -33,13 +33,15 @@ export const apiSlice = createApi({
             query: () => '/specs',
             providesTags: ['Spec'],
         }),
+        getSpec: builder.query({
+            query: (specId) => `/specs/${specId}`,
+        }),
         changeChosenDoughType: builder.mutation<string | FetchArgs, IQueryParamProps>({
             query: (obj: IQueryParamProps) => ({
                 url: `/specs/${obj.specID}/doughType`,
                 method: `PATCH`,
                 body: obj.gottenType,
             }),
-            invalidatesTags: ['Spec'],
         }),
     }),
 })
@@ -48,6 +50,7 @@ export const {
     useGetPizzasQuery,
     useGetPizzaQuery,
     useGetSpecsQuery,
+    useGetSpecQuery,
     useChangeChosenDoughTypeMutation,
 } = apiSlice
 
