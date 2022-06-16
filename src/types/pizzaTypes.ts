@@ -5,6 +5,7 @@ export interface IPizzaType {
     image: string
     name: string
     popularityPoint: number
+    staticPrice: number
     price: number
     specId: string
     type: string

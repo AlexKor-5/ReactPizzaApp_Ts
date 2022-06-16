@@ -1,35 +1,79 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { IDoughType, ISpecType } from '../../../types/pizzaTypes'
+import {
+    useChangeChosenDoughTypeMutation,
+    useChangePriceMutation,
+} from '../../../features/api/apiSlice'
 
 interface IDoughButtonsProps {
     specObject: ISpecType
 }
 
-export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject = {} }) => {
-    const [defaultDoughTypeBtn, setDefaultDoughTypeBtn] = useState<string>('')
-    const [doughTypeTarget, setDoughTypeTarget] = useState<string>('')
-    if (Object.values(specObject).length === 0) return <h1>No Dough Options</h1>
+export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject }) => {
+    const [defaultDough, setDefaultDough] = useState<string>('')
+    const [changeChosenDoughType, { isLoading }] = useChangeChosenDoughTypeMutation()
+    const [changePrice, { isLoading: isLoadingPriceChange }] = useChangePriceMutation()
 
-    const { doughTypes, id: specID } = specObject
+    useEffect(() => {
+        setDefaultDough(specObject?.chosenDoughType)
+    }, [specObject])
+
+    const handleClick = async (
+        btnID: string,
+        btnType: string,
+        priceUp: number,
+        specID: string,
+        pizzaId: string
+    ) => {
+        if (btnType !== defaultDough) {
+            if (!isLoading) {
+                try {
+                    await changeChosenDoughType({
+                        specID,
+                        gottenType: btnType,
+                    }).unwrap()
+                } catch (e) {
+                    console.error('Failed to PATCH spec data: ', e)
+                }
+            }
+            if (!isLoadingPriceChange) {
+                try {
+                    await changePrice({
+                        pizzaId,
+                        priceUp,
+                    }).unwrap()
+                } catch (e) {
+                    console.error('Failed to PATCH price data: ', e)
+                }
+            }
+        }
+    }
+
+    const runDoughButtons = (specObject: ISpecType) => {
+        const { doughTypes, id: specID, pizzaId } = specObject
+        return doughTypes?.map((btn: IDoughType) => {
+            return (
+                <li className={defaultDough === btn.type ? 'active' : ''} key={btn.id}>
+                    <div
+                        role="button"
+                        onKeyPress={(f) => f}
+                        tabIndex={0}
+                        onClick={() => handleClick(btn.id, btn.type, btn.priceUp, specID, pizzaId)}
+                    >
+                        {btn.type}
+                    </div>
+                </li>
+            )
+        })
+    }
 
     return (
         <>
-            {doughTypes?.map((btn: IDoughType) => {
-                return (
-                    <li
-                        className={
-                            defaultDoughTypeBtn === btn.type || doughTypeTarget === btn.id
-                                ? 'active'
-                                : ''
-                        }
-                        key={btn.id}
-                    >
-                        <div role="button" onKeyPress={(f) => f} tabIndex={0} onClick={(f) => f}>
-                            {btn.type}
-                        </div>
-                    </li>
-                )
-            })}
+            {Object.values(specObject).length === 0 ? (
+                <h1>No Dough Options</h1>
+            ) : (
+                runDoughButtons(specObject)
+            )}
         </>
     )
 }

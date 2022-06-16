@@ -43,21 +43,6 @@ export const handlers = [
         const allPizzas = db.pizza.getAll().map(serializePizza)
         return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(allPizzas))
     }),
-    rest.get('/specs', (req, res, ctx) => {
-        const currentSpec = db.spec.getAll()
-        // .map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
-        return res(ctx.delay(FAUX_DELAY_MS_LONG), ctx.status(200), ctx.json(currentSpec))
-    }),
-    rest.get('/specs/:specId', (req, res, ctx) => {
-        const oneSpec = db.spec.findFirst({
-            where: {
-                id: {
-                    equals: req.params.specId,
-                },
-            },
-        })
-        return res(ctx.status(200), ctx.json(oneSpec))
-    }),
     rest.get('/pizzas/:pizzaId', (req, res, ctx) => {
         // console.log('req = ', req)
         let pizza = db.pizza.findFirst({
@@ -82,6 +67,43 @@ export const handlers = [
         }
         // if success
         return res(ctx.delay(FAUX_DELAY_MS), ctx.json(pizza))
+    }),
+    rest.patch('/pizzas/:pizzaId/priceUp', (req, res, ctx) => {
+        const { body, params } = req
+        const pizza = db.pizza.findFirst({
+            where: {
+                id: {
+                    equals: params.pizzaId,
+                },
+            },
+        })
+        const initialPrice = pizza?.staticPrice
+        db.pizza.update({
+            where: {
+                id: {
+                    equals: params.pizzaId,
+                },
+            },
+            data: {
+                price: initialPrice + +body,
+            },
+        })
+        return res(ctx.status(200))
+    }),
+    rest.get('/specs', (req, res, ctx) => {
+        const currentSpec = db.spec.getAll()
+        // .map(spec => ({ ...spec, pizza: spec?.pizza?.id }))
+        return res(ctx.delay(FAUX_DELAY_MS_LONG), ctx.status(200), ctx.json(currentSpec))
+    }),
+    rest.get('/specs/:specId', (req, res, ctx) => {
+        const oneSpec = db.spec.findFirst({
+            where: {
+                id: {
+                    equals: req.params.specId,
+                },
+            },
+        })
+        return res(ctx.delay(FAUX_DELAY_MS), ctx.status(200), ctx.json(oneSpec))
     }),
     rest.patch('/specs/:specID/doughType', (req, res, ctx) => {
         const { body, params } = req

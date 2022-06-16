@@ -10,6 +10,7 @@ export const db = factory({
         currencySign: String,
         type: String,
         description: String,
+        staticPrice: Number,
         price: Number,
         popularityPoint: Number,
         specId: oneOf('spec'),

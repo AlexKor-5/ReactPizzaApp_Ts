@@ -7,6 +7,7 @@ import { RootState } from '../store/store'
 import { PizzaRequestSpecsButtons } from './PizzaRequestSpecsButtons'
 import { Link } from 'react-router-dom'
 import { IPizzaType } from '../../types/pizzaTypes'
+import { PizzaSpecButtons } from '../../components/PizzaSpecButtons/PizzaSpecButtons'
 
 interface IPizzaCardProps {
     id: EntityId
@@ -32,11 +33,7 @@ export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
                 <img className="pizza-block__image" src={imageLink} alt="Pizza" />
                 <h4 className="pizza-block__title">{name}</h4>
             </Link>
-            <PizzaRequestSpecsButtons
-                specId={specId}
-                increasePrice={setPizzaPrice}
-                staticPrice={prevPizzaPrice}
-            />
+            <PizzaRequestSpecsButtons specId={specId} />
             <div className="pizza-block__data">
                 <p>
                     Type: <b>{pizzaType}</b>

@@ -1,11 +1,11 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import ClipLoader from 'react-spinners/ClipLoader'
 import { DoughButtons } from './subComponents/DoughButtons'
 import { SizeButtons } from './subComponents/SizeButtons'
 import { ISpecType } from '../../types/pizzaTypes'
 
 interface IPizzaSpecButtonsProps {
-    specObject: ISpecType
+    data: ISpecType[] | undefined
     requestLifeCycle: API_RequestLifeCycle
 }
 interface API_RequestLifeCycle {
@@ -15,8 +15,10 @@ interface API_RequestLifeCycle {
     isError: boolean
 }
 
-export const PizzaSpecButtons: FC<IPizzaSpecButtonsProps> = ({ specObject, requestLifeCycle }) => {
+export const PizzaSpecButtons: FC<IPizzaSpecButtonsProps> = ({ data, requestLifeCycle }) => {
     const { isLoading, isFetching, isSuccess, isError } = requestLifeCycle
+
+    const [single]: (ISpecType | undefined)[] | undefined = data ?? []
 
     return isLoading || isFetching ? (
         <div className="mooLoader">
@@ -25,7 +27,7 @@ export const PizzaSpecButtons: FC<IPizzaSpecButtonsProps> = ({ specObject, reque
     ) : isSuccess ? (
         <div className="pizza-block__selector">
             <ul>
-                <DoughButtons specObject={specObject} />
+                <DoughButtons specObject={single} />
             </ul>
             <ul>
                 <SizeButtons />
