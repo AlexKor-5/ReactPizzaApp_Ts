@@ -30,7 +30,7 @@ export const PizzaSpecButtons: FC<IPizzaSpecButtonsProps> = ({ data, requestLife
                 <DoughButtons specObject={single} />
             </ul>
             <ul>
-                <SizeButtons />
+                <SizeButtons specObject={single} />
             </ul>
         </div>
     ) : isError ? (

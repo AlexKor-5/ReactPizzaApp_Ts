@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { AddToCartButton } from '../../components/AddToCartButton/AddToCartButton'
 import { EntityId } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
@@ -7,7 +7,6 @@ import { RootState } from '../store/store'
 import { PizzaRequestSpecsButtons } from './PizzaRequestSpecsButtons'
 import { Link } from 'react-router-dom'
 import { IPizzaType } from '../../types/pizzaTypes'
-import { PizzaSpecButtons } from '../../components/PizzaSpecButtons/PizzaSpecButtons'
 
 interface IPizzaCardProps {
     id: EntityId
@@ -24,8 +23,6 @@ export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
         popularityPoint,
         specId,
     } = pizza
-    const [pizzaPrice, setPizzaPrice] = useState<number>(price)
-    const [prevPizzaPrice] = useState<number>(price)
 
     return (
         <div className="pizza-block">
@@ -34,6 +31,7 @@ export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
                 <h4 className="pizza-block__title">{name}</h4>
             </Link>
             <PizzaRequestSpecsButtons specId={specId} />
+
             <div className="pizza-block__data">
                 <p>
                     Type: <b>{pizzaType}</b>
@@ -46,7 +44,7 @@ export const PizzaCard: FC<IPizzaCardProps> = ({ id }) => {
             <div className="pizza-block__bottom">
                 <div className="pizza-block__price">
                     <small>from</small> {currencySign}
-                    {pizzaPrice}{' '}
+                    {price}{' '}
                 </div>
                 <AddToCartButton />
             </div>

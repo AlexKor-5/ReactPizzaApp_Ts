@@ -11,6 +11,8 @@ export const db = factory({
         type: String,
         description: String,
         staticPrice: Number,
+        doughPriceUp: Number,
+        sizePriceUp: Number,
         price: Number,
         popularityPoint: Number,
         specId: oneOf('spec'),

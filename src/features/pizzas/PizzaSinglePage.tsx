@@ -29,7 +29,6 @@ export const PizzaSinglePage: FC = () => {
                         <h4>{data.name}</h4>
                     </div>
 
-                    {/*<PizzaRequestSpecsButtons specId={data.specId} />*/}
                     <PizzaOneSpec specId={data.specId} />
 
                     <div className="pizza-block__data">

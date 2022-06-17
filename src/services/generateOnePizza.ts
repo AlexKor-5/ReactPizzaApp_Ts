@@ -7,6 +7,8 @@ export const generateOnePizza = (name: string, image: string, specId: object): o
         name,
         image,
         staticPrice: singlePrice,
+        doughPriceUp: 0,
+        sizePriceUp: 0,
         price: singlePrice,
         currencySign: '$',
         popularityPoint: randomFromArray([

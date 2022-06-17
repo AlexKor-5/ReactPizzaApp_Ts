@@ -15,7 +15,11 @@ import { db } from './dataModel'
 // fill pizza and spec table with data
 for (let i = 0; i < PIZZAS_AMOUNT; i++) {
     const spec = db.spec.create(
-        generateOneSpec(PIZZAS_DOUGHS_TYPES_OPTIONS, PIZZA_SIZE_OPTIONS, DEFAULT_CHOSEN_VALUES)
+        generateOneSpec(
+            PIZZAS_DOUGHS_TYPES_OPTIONS,
+            PIZZA_SIZE_OPTIONS,
+            DEFAULT_CHOSEN_VALUES
+        )
     )
     const lastSpecId = db.spec.getAll()[db.spec.getAll().length - 1].id
     const pizza = db.pizza.create(generateOnePizza(pizzaNames[i], pizzaImages[i], spec))
@@ -70,6 +74,31 @@ export const handlers = [
     }),
     rest.patch('/pizzas/:pizzaId/priceUp', (req, res, ctx) => {
         const { body, params } = req
+        const { priceUp, type } = body
+        if (type === 'dough') {
+            db.pizza.update({
+                where: {
+                    id: {
+                        equals: params.pizzaId,
+                    },
+                },
+                data: {
+                    doughPriceUp: priceUp,
+                },
+            })
+        }
+        if (type === 'size') {
+            db.pizza.update({
+                where: {
+                    id: {
+                        equals: params.pizzaId,
+                    },
+                },
+                data: {
+                    sizePriceUp: priceUp,
+                },
+            })
+        }
         const pizza = db.pizza.findFirst({
             where: {
                 id: {
@@ -77,7 +106,6 @@ export const handlers = [
                 },
             },
         })
-        const initialPrice = pizza?.staticPrice
         db.pizza.update({
             where: {
                 id: {
@@ -85,7 +113,7 @@ export const handlers = [
                 },
             },
             data: {
-                price: initialPrice + +body,
+                price: pizza?.staticPrice + pizza?.doughPriceUp + pizza?.sizePriceUp,
             },
         })
         return res(ctx.status(200))
@@ -115,6 +143,20 @@ export const handlers = [
             },
             data: {
                 chosenDoughType: body,
+            },
+        })
+        return res(ctx.status(200))
+    }),
+    rest.patch('/specs/:specID/size', (req, res, ctx) => {
+        const { body, params } = req
+        db.spec.update({
+            where: {
+                id: {
+                    equals: params.specID,
+                },
+            },
+            data: {
+                chosenSize: body,
             },
         })
         return res(ctx.status(200))

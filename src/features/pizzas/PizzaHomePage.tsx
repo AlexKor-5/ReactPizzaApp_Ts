@@ -7,12 +7,21 @@ import MoonLoader from 'react-spinners/MoonLoader'
 import { useSelector } from 'react-redux'
 
 export const PizzaHomePage: FC = () => {
-    const { data, isLoading, isSuccess, isError, isFetching } = useGetPizzasQuery()
+    const { data, isLoading, isSuccess, isError, isFetching } =
+        useGetPizzasQuery()
     const pizzasIds = useSelector(selectFilteredPizzaIds)
 
-    const showContent = (isLoading: boolean, isSuccess: boolean, isError: boolean): ReactNode => {
+    const showContent = (
+        isLoading: boolean,
+        isSuccess: boolean,
+        isError: boolean
+    ): ReactNode => {
         return isLoading || isFetching ? (
-            <MoonLoader loading={isLoading || isFetching} size={100} color={'#fe5f1e'} />
+            <MoonLoader
+                loading={isLoading || isFetching}
+                size={100}
+                color={'#fe5f1e'}
+            />
         ) : isSuccess ? (
             pizzasIds.map((id) => <PizzaCard id={id} key={id} />)
         ) : isError ? (
@@ -32,7 +41,9 @@ export const PizzaHomePage: FC = () => {
 
                 <h2 className="content__title">All pizzas</h2>
 
-                <div className="content__items">{showContent(isLoading, isSuccess, isError)}</div>
+                <div className="content__items">
+                    {showContent(isLoading, isSuccess, isError)}
+                </div>
             </div>
         </div>
     )

@@ -9,6 +9,13 @@ interface IDoughButtonsProps {
     specObject: ISpecType
 }
 
+interface IHandleClickProps {
+    btnType: string
+    priceUp: number
+    specID: string
+    pizzaId: string
+}
+
 export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject }) => {
     const [defaultDough, setDefaultDough] = useState<string>('')
     const [changeChosenDoughType, { isLoading }] = useChangeChosenDoughTypeMutation()
@@ -18,13 +25,8 @@ export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject }) => {
         setDefaultDough(specObject?.chosenDoughType)
     }, [specObject])
 
-    const handleClick = async (
-        btnID: string,
-        btnType: string,
-        priceUp: number,
-        specID: string,
-        pizzaId: string
-    ) => {
+    const handleClick = async (obj: IHandleClickProps) => {
+        const { btnType, priceUp, specID, pizzaId } = obj
         if (btnType !== defaultDough) {
             if (!isLoading) {
                 try {
@@ -40,7 +42,7 @@ export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject }) => {
                 try {
                     await changePrice({
                         pizzaId,
-                        priceUp,
+                        priceObj: { priceUp, type: 'dough' },
                     }).unwrap()
                 } catch (e) {
                     console.error('Failed to PATCH price data: ', e)
@@ -58,7 +60,14 @@ export const DoughButtons: FC<IDoughButtonsProps> = ({ specObject }) => {
                         role="button"
                         onKeyPress={(f) => f}
                         tabIndex={0}
-                        onClick={() => handleClick(btn.id, btn.type, btn.priceUp, specID, pizzaId)}
+                        onClick={() =>
+                            handleClick({
+                                btnType: btn.type,
+                                priceUp: btn.priceUp,
+                                specID: specID,
+                                pizzaId: pizzaId,
+                            })
+                        }
                     >
                         {btn.type}
                     </div>

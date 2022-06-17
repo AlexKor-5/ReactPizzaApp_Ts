@@ -11,8 +11,6 @@ export const PizzaOneSpec: FC<IPizzaOneSpecProps> = ({ specId }) => {
     // console.log('one spe query = ', data)
     return (
         <>
-            <h1>One spec query!</h1>
-            <h3>{specId}</h3>
             <PizzaSpecButtons data={[data]} requestLifeCycle={requestLifeCycle} />
         </>
     )
